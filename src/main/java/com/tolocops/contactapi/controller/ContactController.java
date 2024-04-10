@@ -12,11 +12,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+
 @RestController
 @RequestMapping("/contacts")
 @RequiredArgsConstructor
 public class ContactController {
 
+    private static final String PHOTO_DIRECTORY = System.getProperty("user.home") + "/Coding/Spring Boot/contactapi/uploads/";
     private final ContactService contactService;
 
 
@@ -50,6 +58,11 @@ public class ContactController {
     public ResponseEntity<String> uploadPhoto(@RequestParam("id") String id,
                                               @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok().body(contactService.uploadPhoto(id, file));
+    }
+
+    @GetMapping(path = "/image/{filename}", produces = { IMAGE_PNG_VALUE, IMAGE_JPEG_VALUE })
+    public byte[] getPhoto(@PathVariable("filename") String filename) throws IOException {
+        return Files.readAllBytes(Paths.get(PHOTO_DIRECTORY + filename));
     }
 
     @DeleteMapping("/{id}")

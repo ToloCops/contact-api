@@ -83,7 +83,7 @@ public class ContactServiceImpl implements ContactService {
         }
 
         // Update the contact with the photo URL
-        String photoUrl = "/uploads/" + uniqueFilename;
+        String photoUrl = "http://localhost:8080/contacts/image/" + uniqueFilename;
         contact.setPhotoUrl(photoUrl);
         contactRepo.save(contact);
         return photoUrl;
