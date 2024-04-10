@@ -30,9 +30,14 @@ public class ContactController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
     }
 
-    @GetMapping("/contacts/{id}")
-    public ResponseEntity<ContactDto> getContactById(@PathVariable String id) {
-        return ResponseEntity.ok(contactService.getContact(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getContactById(@PathVariable String id) {
+        try {
+            ContactDto contact = contactService.getContact(id);
+            return ResponseEntity.ok().body(contact);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact not found");
+        }
     }
 
     @GetMapping
@@ -45,6 +50,12 @@ public class ContactController {
     public ResponseEntity<String> uploadPhoto(@RequestParam("id") String id,
                                               @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok().body(contactService.uploadPhoto(id, file));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContact(@PathVariable String id) {
+        contactService.deleteContact(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -35,8 +35,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactDto getContact(String id) {
-        Optional<Contact> contact = contactRepo.findById(id);
-        return contact.map(ContactMapper::toDto).orElseThrow(() -> new RuntimeException("Contact not found"));
+        Contact contact = contactRepo.findById(id).orElseThrow(() -> new RuntimeException("Contact not found"));
+        return ContactMapper.toDto(contact);
     }
 
     @Override
